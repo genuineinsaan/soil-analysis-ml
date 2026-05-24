@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soil Analysis</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- GOOGLE FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- BACKGROUND GLOW -->
+
+    <div class="bg-glow glow1"></div>
+    <div class="bg-glow glow2"></div>
+
+    <div class="container">
+
+        <!-- HEADER -->
+
+        <div class="header">
+
+            <h1>🌱 Soil Analysis</h1>
+
+            <p class="subtitle">
+                Smart Soil Detection and Fertility Analysis
+            </p>
+
+        </div>
+
+        <!-- FORM -->
+
+        <form 
+            action="/" 
+            method="POST" 
+            enctype="multipart/form-data"
+            onsubmit="showLoader()"
+        >
+
+            <div class="upload-box">
+
+                <input 
+                    type="file" 
+                    name="soil_image" 
+                    accept="image/*" 
+                    required
+                >
+
+            </div>
+
+            <button id="analyzeButton" type="submit">
+                Analyze Soil
+            </button>
+
+        </form>
+
+        <!-- LOADER -->
+
+        <div class="loader" id="loader"></div>
+
+        <p id="loadingText" class="loading-text">
+            Analyzing Soil... Please wait
+        </p>
+
+        {% if uploaded_image %}
+
+        <!-- IMAGE SECTION -->
+
+        <div class="glass-card image-section">
+
+            <h2>Uploaded Soil Image</h2>
+
+            <img 
+                src="{{ url_for('static', filename='uploads/' + uploaded_image) }}"
+            >
+
+        </div>
+
+        {% endif %}
+
+        {% if result %}
+
+        <!-- MAIN RESULT -->
+
+        <div class="glass-card result-section">
+
+            <h2>Prediction Result</h2>
+
+            <!-- TOP 3 CARDS -->
+
+            <div class="prediction-grid">
+
+                {% for prediction in result.top_predictions %}
+
+                <div class="prediction-card">
+
+                    <h3>#{{ loop.index }}</h3>
+
+                    <h4>{{ prediction.soil }}</h4>
+
+                    <p>{{ prediction.confidence }}%</p>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <!-- DETAILS CARDS -->
+
+        <div class="details-grid">
+
+            <div class="glass-card detail-card">
+                <h3>🌿 Fertility</h3>
+                <p>{{ result.fertility }}</p>
+            </div>
+
+            <div class="glass-card detail-card">
+                <h3>💧 Moisture</h3>
+                <p>{{ result.moisture }}</p>
+            </div>
+
+            <div class="glass-card detail-card">
+                <h3>📊 Health Score</h3>
+                <p>{{ result.health_score }}%</p>
+            </div>
+
+        </div>
+
+        <!-- CROPS -->
+
+        <div class="glass-card crops-section">
+
+            <h2>Recommended Crops</h2>
+
+            <div class="crop-tags">
+
+                {% for crop in result.crops %}
+
+                    <span>{{ crop }}</span>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <!-- SUGGESTION -->
+
+        <div class="glass-card suggestion-section">
+
+            <h2>Suggestion</h2>
+
+            <p>{{ result.suggestion }}</p>
+
+        </div>
+
+        <!-- DOWNLOAD BUTTON -->
+
+        <div class="download-section">
+
+            <a href="/download_report">
+
+                <button type="button">
+                    Download PDF Report
+                </button>
+
+            </a>
+
+        </div>
+
+        <!-- GRAPHS -->
+
+        <div class="glass-card graph-section">
+
+            <h2>Analysis Charts</h2>
+
+            <div class="graph-grid">
+
+                <img 
+                    src="{{ url_for('static', filename='graphs/bar_graph.png') }}"
+                >
+
+                <img 
+                    src="{{ url_for('static', filename='graphs/pie_chart.png') }}"
+                >
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        <!-- FOOTER -->
+
+        <footer>
+
+            <p>
+                © 2026 Soil Analysis Project | All Rights Reserved
+            </p>
+
+            <p>
+                Developed by Shashank Srivastava
+            </p>
+
+        </footer>
+
+    </div>
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        function showLoader() {
+
+            document.getElementById("loader").style.display = "block";
+
+            document.getElementById("loadingText").style.display = "block";
+
+            document.getElementById("analyzeButton").disabled = true;
+
+            document.getElementById("analyzeButton").innerHTML = "Analyzing...";
+        }
+
+    </script>
+
+</body>
+</html>
